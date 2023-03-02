@@ -1,0 +1,6 @@
+{
+  "name": "gorilla",
+  "theme": "trend",
+  "timeframes": [300, 900],
+  "status": "allowed"
+}
