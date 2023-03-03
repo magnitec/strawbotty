@@ -7,7 +7,7 @@ export const status = async (
   res: Response,
   account: MidaTradingAccount,
 ) => {
-  BotService.status(account)
+  BotService.satus(account)
     .then((result) => res.status(200).json(result))
     .catch((e) => res.status(500).json(e)); // # todo: next it to an error handler
 };
