@@ -1,9 +1,9 @@
 name: build
 on:
   push:
-    branches: [main]
+    branches: [workflows]
   pull_request:
-    branches: [main]
+    branches: [workflows]
 jobs:
   build:
     runs-on: ubuntu-latest
