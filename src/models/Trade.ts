@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 import { MidaOrderDirection } from "@reiryoku/mida";
 import { OrderType } from "../types/enums";
 import { env } from "../utils/env-check";

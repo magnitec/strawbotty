@@ -1,16 +1,7 @@
-import fs from "fs";
-import {
-  MidaTimeframe,
-  MidaTradingAccount,
-  decimal,
-  MidaDecimal,
-} from "@reiryoku/mida";
+import { MidaTimeframe } from "@reiryoku/mida";
 import { adapter } from "./py-adapter";
 import { poolManager } from "./PoolManager";
-import * as TradeService from "../services/TradeService";
-import { env } from "../utils/env-check";
 import assert from "assert";
-import { OrderType } from "../types/enums";
 
 interface StratTarget {
   timeframe: MidaTimeframe;
