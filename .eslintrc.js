@@ -15,6 +15,6 @@ module.exports = {
     sourceType: "module",
   },
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "unused-imports"],
   root: true,
 };
