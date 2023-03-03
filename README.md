@@ -1,9 +1,9 @@
 # Strawbotty
 
+![Build Status](https://github.com/magnitec/strawbotty/actions/workflows/master.yml/badge.svg?branch=workflows)
+
 A trading bot with strategy analysis built with node and python.
 Please note that the bot is currently a work in progress and should not be used for actual trading.
-
-![Build Status](https://github.com/magnitec/midatest/actions/workflows/master.yml/badge.svg?branch=master)
 
 ## Overview
 
