@@ -6,17 +6,6 @@ path.append('../')
 from dict import MidaOrderDirection, Signal
 from helpers import is_pullback, calculate_trendlines
 
-# Buy Rules
-# 1. Daily candle is Green
-# 2. RSI is above 50
-# 3. MFI is above 50
-# 4. Uptrend (7 EMA is above 20 EMA)
-# 5. Price pullback inside 7 and 20 EMA
-# 6. Draw TrendLine from highest swing
-# 7. Price to break above trendline
-# 8. SL/TP: 10/20
-
-
 def signal_long(m15: pd.DataFrame, d1: pd.DataFrame) -> bool:
     close = m15["close"].iloc[-1]
     ema7 = ta.ema(m15["close"], length=7).iloc[-1]
@@ -46,16 +35,6 @@ def signal_long(m15: pd.DataFrame, d1: pd.DataFrame) -> bool:
     ]
 
     return all(rules)
-
-# Sell Rules
-# 1. Daily candle is Red
-# 2. RSI is below 50
-# 3. MFI is below 50
-# 4. Downtrend (7 EMA is below 20 EMA)
-# 5. Price pullback inside 7 and 20 EMA
-# 6. Draw TrendLine from lowest swing
-# 7. Price to break below trendline and bar is closed
-# 8. SL/TP: 10/20
 
 def signal_short(m15: pd.DataFrame, d1: pd.DataFrame) -> bool:
     # performance todo:

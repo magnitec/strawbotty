@@ -5,36 +5,6 @@ from sys import path
 path.append('../')
 from dict import MidaOrderDirection, Signal
 from helpers import pivot_points, is_ema_rebounce
-
-# usdjpy, though maybe also eurusd
-# h1; d1
-# not trading on Monday
-
-
-# Buy
-# 1. Today's pivot (PP) is bigger than yesterday's Pivot.
-# 2. All EMA 30,15,4 positions are above today's Pivot.
-# 3. Entry buy if the price returns to EMA 30. = low < EMA_30 < high for the past 3 candles
-
-# 4. The target is R3 but this position can be closed if the last 4 candles cannot penetrate upwards while the New York market is immediately closed.
-# 5. Stop loss is 30 pips and you can Exit if EMA 4 crosses Ema 15 down.
-
-# Sell
-# Today's pivot must be lower than yesterday's Pivot.
-# 2. EMA 4 <15 <30
-# 3. Enter immediately when the price turns around EMA30
-# 4. Keep watching the action from EMA4 after the last candle is closed.
-# 5. If EMA4 comes to cut EMA15 then immediately exit when the candle is closed.
-# 6. If all is smooth then all EMAs will occupy their respective positions.
-# 7. If the price has reached S2 and there are some candles that are not able to penetrate the lower limit, then that means Support in that area is very strong. My advice is that you should immediately exit.
-# 8. The target is S3. No need to take risks to get bigger profits because in S3 usually a lot of traders will take profits (meaning the price will correct upwards and
-# your profits will decrease). 
-
-# TP:
-# varies from 30 to a maximum of 80 pips (or R3 / S3 has been reached) 
-# SL:
-# 30 pips
-
 #%%
 def signal_long(h1: pd.DataFrame, d1: pd.DataFrame):
     # 1. Today's pivot (PP) is bigger than yesterday's Pivot.
