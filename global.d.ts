@@ -28,18 +28,6 @@ declare global {
     volume?: number;
   }
 
-  // interface OHLCStore {
-  //   m1?: OHLC[];
-  //   m5?: OHLC[];
-  //   m15?: OHLC[];
-  //   h1?: OHLC[];
-  //   h4?: OHLC[];
-  // }
-
-  // type OHLCStore2 = Partial<Record<Timeframe, MidaPeriod[]>>;
-
-  // type OHLCStore3 = Partial<Record<Timeframe, OHLC[]>>;
-
   type OHLCStore = Partial<Record<Timeframe, OHLC[]>>;
 
   // deprecated
