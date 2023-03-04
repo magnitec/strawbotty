@@ -13,15 +13,14 @@ export const adapter = (
     };
 
     PythonShell.run("signaller.py", options, (err, result) => {
-      const processed = result ? JSON.parse(result[0]) : null;
-
-      assert(
-        isSignalResults(processed),
-        "The result is not an array of SignalResult objects",
-      );
-
       if (err) {
         reject(err);
+      }
+
+      const processed = result ? JSON.parse(result[0]) : null;
+
+      if (!isSignalResults(processed)) {
+        reject("The result is not an array of SignalResult objects");
       }
 
       resolve(processed);
