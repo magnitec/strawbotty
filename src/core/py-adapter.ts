@@ -1,4 +1,3 @@
-import assert from "assert";
 import { PythonShell } from "python-shell";
 
 export const adapter = (
