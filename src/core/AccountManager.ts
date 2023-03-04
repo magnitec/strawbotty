@@ -7,7 +7,7 @@ import {
 } from "@reiryoku/mida";
 import { env } from "../utils/env-check";
 import * as TradeService from "../services/TradeService";
-import { getAllSignals } from "./scanner";
+import { getActiveSignals } from "./scanner";
 import { checkAvailability } from "../utils/availability";
 
 export class AccountManager extends MidaTradingSystem {
@@ -100,7 +100,7 @@ export class AccountManager extends MidaTradingSystem {
     }
 
     const periods = await this.getHistoricalPeriods();
-    const signals = await getAllSignals(period.timeframe, periods);
+    const signals = await getActiveSignals(period.timeframe, periods);
     TradeService.createTrades(this.tradingAccount, signals);
   }
 

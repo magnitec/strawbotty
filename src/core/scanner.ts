@@ -30,7 +30,7 @@ export const isMatch = (
   return Object.values(checks).every((result) => result);
 };
 
-export const getAllSignals = async (
+export const getActiveSignals = async (
   timeframe: MidaTimeframe,
   ohlcStore: OHLCStore,
 ) => {
