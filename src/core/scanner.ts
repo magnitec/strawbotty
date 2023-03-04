@@ -1,7 +1,6 @@
 import { MidaTimeframe } from "@reiryoku/mida";
 import { adapter } from "./py-adapter";
 import { poolManager } from "./PoolManager";
-import assert from "assert";
 
 interface StratTarget {
   timeframe: MidaTimeframe;
@@ -54,11 +53,7 @@ export const getActiveSignals = async (
   const targetStrats = allStrats.filter((s) => isMatch(s, target, usedPool));
   const allStratNames = targetStrats.map((s) => s.name);
 
-  const signalResults = await assertSignalResults(
-    allStratNames,
-    ohlcStore,
-    signallerPath,
-  );
+  const signalResults = await adapter(allStratNames, ohlcStore, signallerPath);
 
   signalResults.forEach((result) => {
     if (result.signal.active) {
@@ -87,37 +82,4 @@ export const getActiveSignals = async (
   // );
 
   return candidates.slice(0, remainingPoolAmount);
-};
-
-// #todo: move this to py-adapter and separate type assertion from adapter
-export const assertSignalResults = async (
-  stratList: string[],
-  ohlcStore: OHLCStore,
-  signallerPath: string,
-): Promise<SignalResult[]> => {
-  const result: unknown = await adapter(
-    [JSON.stringify(stratList), JSON.stringify(ohlcStore)],
-    signallerPath,
-  );
-
-  const isSignalResults = (value: unknown): value is SignalResult[] => {
-    return (
-      Array.isArray(value) &&
-      value.every((signalResult) => {
-        return (
-          signalResult !== null &&
-          typeof signalResult === "object" &&
-          "meta" in signalResult &&
-          "active" in signalResult.signal
-        );
-      })
-    );
-  };
-
-  assert(
-    isSignalResults(result),
-    "The result is not an array of SignalResult objects",
-  );
-
-  return result;
 };
