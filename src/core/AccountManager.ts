@@ -1,110 +1,36 @@
-import {
-  MidaTradingSystem,
-  MidaTradingSystemParameters,
-  MidaTick,
-  MidaTimeframe,
-  MidaPeriod,
-} from "@reiryoku/mida";
+import { Mida, MidaTradingAccount } from "@reiryoku/mida";
+import { CTraderPlugin } from "@reiryoku/mida-ctrader";
 import { env } from "../utils/env-check";
-import * as TradeService from "../services/TradeService";
-import { getActiveSignals } from "./scanner";
-import { checkAvailability } from "../utils/availability";
 
-export class AccountManager extends MidaTradingSystem {
-  timeframes: Timeframe[];
+Mida.use(new CTraderPlugin());
 
-  constructor({ tradingAccount }: MidaTradingSystemParameters) {
-    super({ tradingAccount });
-    this.timeframes = [
-      MidaTimeframe.M1,
-      MidaTimeframe.M5,
-      MidaTimeframe.M15,
-      MidaTimeframe.H1,
-      MidaTimeframe.H4,
-    ];
-  }
+export class AccountManager {
+  account: MidaTradingAccount | null = null;
 
-  watched() {
-    return {
-      EURUSD: {
-        watchPeriods: true,
-        watchTicks: true,
-        timeframes: [
-          MidaTimeframe.M1,
-          MidaTimeframe.M5,
-          MidaTimeframe.M15,
-          MidaTimeframe.H1,
-          MidaTimeframe.H4,
-        ],
-      },
-    };
-  }
-
-  // async configure() {
-  //   // Called once per trading system instance
-  // }
-
-  async onStart() {
-    console.log("AccountManager: start");
-  }
-
-  async onTick(tick: MidaTick) {
-    // BotService.synchronize(this.tradingAccount);
-  }
-
-  async getHistoricalPeriods(): Promise<OHLCStore> {
-    // # todo: performance
-
-    const periods: OHLCStore = {
-      [MidaTimeframe.M1]: [],
-      [MidaTimeframe.M5]: [],
-      [MidaTimeframe.M15]: [],
-      [MidaTimeframe.H1]: [],
-      [MidaTimeframe.H4]: [],
-    };
-
-    await Promise.all(
-      this.timeframes.map(async (timeframe) => {
-        const midaPeriod = await this.tradingAccount.getSymbolPeriods(
-          env.PRIMARY_PAIR,
-          timeframe,
-        );
-
-        const ohlc: MidaOHLC[] = midaPeriod.slice(-60).map((p) => {
-          return {
-            timestamp: p.endDate.timestamp,
-            open: p.open.toNumber(),
-            high: p.high.toNumber(),
-            low: p.low.toNumber(),
-            close: p.close.toNumber(),
-          };
-        });
-
-        periods[timeframe] = ohlc;
-      }),
-    );
-
-    return periods;
-  }
-
-  async onPeriodClose(period: MidaPeriod) {
-    // # todo: min margin must be met
-    const openPositions = await this.tradingAccount.getOpenPositions();
-
-    const isTradingAllowed = checkAvailability(
-      new Date(),
-      openPositions.length,
-    );
-    if (!isTradingAllowed) {
-      return;
+  public getAccount(): MidaTradingAccount {
+    if (!this.account) {
+      throw new Error("Account isn't initialized.");
     }
 
-    const periods = await this.getHistoricalPeriods();
-    const signals = await getActiveSignals(period.timeframe, periods);
-    TradeService.createTrades(this.tradingAccount, signals);
+    return this.account;
   }
 
-  async onStop() {
-    console.log("AccountManager: stop");
+  async login() {
+    try {
+      this.account = await Mida.login("cTrader", {
+        clientId: env.CT_CLIENT_ID,
+        clientSecret: env.CT_CLIENT_SECRET,
+        accessToken: env.CT_ACCESS_TOKEN,
+        cTraderBrokerAccountId: env.CT_BROKER_ACCOUNT_ID,
+        demoProxy: "demo-eu-1.ctraderapi.com",
+        liveProxy: "live-eu-1.ctraderapi.com",
+      });
+    } catch (e) {
+      // Wrapper for Mida's broken error parser.
+      console.error("Error while logging into Mida.", e);
+      throw e;
+    }
   }
 }
+
+export const accountManager = new AccountManager();

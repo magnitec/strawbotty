@@ -3,14 +3,14 @@ import logger from "morgan";
 import helmet from "helmet";
 import bodyParser from "body-parser";
 import { MidaTradingAccount } from "@reiryoku/mida";
-import { AccountManager } from "./core/AccountManager";
+import { TradingSystem } from "./core/TradingSystem";
 import { createAllRoutes } from "./routes";
 import { env } from "./utils/env-check";
 import { poolManager } from "./core/PoolManager";
 
 export const createApp = (
   account: MidaTradingAccount,
-  accountManager: AccountManager,
+  tradingSystem: TradingSystem,
 ) => {
   const router = Router();
   createAllRoutes(router, account);
@@ -18,6 +18,7 @@ export const createApp = (
   const app = express();
 
   app.set("port", env.PORT);
+  app.set("account", account);
   app.set("poolManager", poolManager);
   poolManager.initStrats();
   app.use(logger("dev"));

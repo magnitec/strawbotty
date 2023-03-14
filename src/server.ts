@@ -1,9 +1,10 @@
 import { createApp } from "./app";
-import { init } from "./core/init";
+import { AccountManager, accountManager } from "./core/AccountManager";
 import mongoose from "mongoose";
 import { env } from "./utils/env-check";
 import { BotState } from "./models/BotState";
 import { BotStatus } from "./types/enums";
+import { TradingSystem } from "./core/TradingSystem";
 
 const run = async () => {
   mongoose.set("strictQuery", true);
@@ -21,13 +22,17 @@ const run = async () => {
   }
 
   console.log("Initializing the application...");
-  const { account, accountManager } = await init();
-  const app = createApp(account, accountManager);
+  await accountManager.login();
+  const account = accountManager.getAccount();
+  const tradingSystem = new TradingSystem({ tradingAccount: account });
+  await tradingSystem.start();
+
+  const app = createApp(account, tradingSystem);
 
   app.listen(env.PORT, () => console.log("Application started."));
 
   process.on("SIGINT", () => {
-    accountManager.stop();
+    tradingSystem.stop();
     mongoose.connection.close();
   });
 };
